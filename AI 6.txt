@@ -1,0 +1,89 @@
+import pandas as pd
+import seaborn as sns
+import matplotlib.pyplot as plt
+from sklearn.preprocessing import LabelEncoder, StandardScaler
+from sklearn.model_selection import train_test_split, GridSearchCV
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+import warnings
+
+warnings.filterwarnings('ignore')
+%matplotlib inline
+
+# Importing the data
+data = pd.read_csv("Hr.csv")
+
+# Displaying the first few rows of the data
+data.head()
+
+# Checking the information about the data
+data.info()
+
+# Getting the column names
+data.columns
+
+# Checking the shape of the data
+data.shape
+
+# Department-wise performance analysis
+dept = data[['EmpDepartment', 'PerformanceRating']].copy()
+
+# Calculating the mean performance rating for each department
+dept_per = dept.groupby('EmpDepartment')['PerformanceRating'].mean()
+
+# Plotting a bar graph for department-wise performance
+plt.figure(figsize=(10, 4.5))
+sns.barplot(x=dept_per.index, y=dept_per.values)
+plt.xlabel('Department')
+plt.ylabel('Performance Rating')
+plt.show()
+
+# Analyzing each department separately
+dept_per_counts = dept.groupby(['EmpDepartment', 'PerformanceRating']).size().unstack()
+
+# Plotting separate bar graphs for each department's performance
+plt.figure(figsize=(15, 10))
+for i, department in enumerate(dept_per_counts.columns):
+    plt.subplot(2, 3, i+1)
+    sns.barplot(x=dept_per_counts.index, y=dept_per_counts[department])
+    plt.xlabel('Performance Rating')
+    plt.ylabel('Count')
+    plt.title(department)
+plt.tight_layout()
+plt.show()
+
+# Encoding categorical columns
+enc = LabelEncoder()
+for col in ['Gender', 'EducationBackground', 'MaritalStatus', 'EmpDepartment', 'EmpJobRole',
+            'BusinessTravelFrequency', 'OverTime', 'Attrition']:
+    data[col] = enc.fit_transform(data[col])
+
+# Selecting relevant features and target variable
+X = data[['EmpEnvironmentSatisfaction', 'EmpDepartment', 'EmpLastSalaryHikePercent', 'EmpWorkLifeBalance',
+          'EmpJobInvolvement', 'EmpJobLevel', 'EmpJobSatisfaction', 'EmpRelationshipSatisfaction',
+          'TotalWorkExperienceInYears']]
+y = data['PerformanceRating']
+
+# Splitting the data into train and test sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=10)
+
+# Scaling the features
+sc = StandardScaler()
+X_train = sc.fit_transform(X_train)
+X_test = sc.transform(X_test)
+
+# Creating a Random Forest Classifier
+classifier_rfg = RandomForestClassifier(random_state=33, n_estimators=23)
+parameters = [{'min_samples_split': [2, 3, 4, 5], 'criterion': ['gini', 'entropy'], 'min_samples_leaf': [1, 2, 3],
+               'min_samples_split': [2, 3, 4, 5]}]
+model_gridrf = GridSearchCV(estimator=classifier_rfg, param_grid=parameters, scoring='accuracy')
+model_gridrf.fit(X_train, y_train)
+
+model_gridrf.best_params_
+
+y_predict_rf = model_gridrf.predict(X_test)
+
+print(accuracy_score(y_test, y_predict_rf))
+print(classification_report(y_test, y_predict_rf))
+
+confusion_matrix(y_test, y_predict_rf)
