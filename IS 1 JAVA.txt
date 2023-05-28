@@ -1,0 +1,22 @@
+package iscode;
+
+public class selfandxor {
+
+	public static void main(String[] args) {
+		 int i,len;
+		 String str = "Hello world ";
+		  len= str.length();
+		  
+		  for(i=0;i<len;i++)
+		  {
+			  System.out.print((char)  (str.charAt(i)&127));
+		  }
+		  
+		 System.out.println();
+		 
+		 for(i=0;i<len;i++)
+		  {
+			  System.out.print((char)  (str.charAt(i)^127));
+		  }
+		  
+		 System.out.println();
