@@ -1,0 +1,66 @@
+#include <iostream>
+#include <cmath>
+using namespace std;
+
+// Find GCD (Greatest Common Divisor)
+int gcd(int a, int b) {
+    if (b == 0)
+        return a;
+    return gcd(b, a % b);
+}
+
+// Modular exponentiation
+long long modExp(long long base, long long exponent, long long modulus) {
+    long long result = 1;
+    base = base % modulus;
+    while (exponent > 0) {
+        if (exponent % 2 == 1)
+            result = (result * base) % modulus;
+        exponent = exponent >> 1;
+        base = (base * base) % modulus;
+    }
+    return result;
+}
+
+int main() {
+    // Random prime numbers
+    long long p = 13;
+    long long q = 11;
+    long long n = p * q; // Calculate n
+    long long phi = (p - 1) * (q - 1); // Calculate phi
+
+    // Public key
+    // e stands for encrypt
+    long long e = 7;
+    // Check that 1 < e < phi(n) and gcd(e, phi(n)) = 1; i.e., e and phi(n) are coprime.
+    while (gcd(e, phi) != 1)
+        e++;
+
+    // Private key
+    // d stands for decrypt
+    // Choose d such that it satisfies d * e = 1 mod phi
+    long long d;
+    for (d = 2; d < phi; d++) {
+        if ((d * e) % phi == 1)
+            break;
+    }
+
+    long long message = 9;
+    // Encryption
+    long long encrypted = modExp(message, e, n);
+
+    // Decryption
+    long long decrypted = modExp(encrypted, d, n);
+
+    cout << "Original Message = " << message << endl;
+    cout << "p = " << p << endl;
+    cout << "q = " << q << endl;
+    cout << "n = pq = " << n << endl;
+    cout << "phi = " << phi << endl;
+    cout << "e = " << e << endl;
+    cout << "d = " << d << endl;
+    cout << "Encrypted message = " << encrypted << endl;
+    cout << "Decrypted message = " << decrypted << endl;
+
+    return 0;
+}
