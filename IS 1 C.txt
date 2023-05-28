@@ -1,0 +1,51 @@
+
+###########C######
+#include<stdio.h>
+#include <string.h>
+int main()
+{
+    char str[]="Hello World";
+     int i,len;
+     len=strlen(str);
+     for(i=0;i<len;i++)
+     {
+     printf("%c",str[i]&127);
+     }
+    printf("\n");
+    
+    for(i=0;i<len;i++)
+     {
+     printf("%c",str[i]^127);
+     }
+     printf("\n");
+     
+     for (i=0;i<len;i++)
+     {
+         printf("%c",str[i]|127);
+     }
+     printf("\n");
+}
+#############JAVA################
+package iscode;
+public class selfandxor {
+
+	public static void main(String[] args) {
+		 int i,len;
+		 String str = "Hello world ";
+		  len= str.length();
+		  
+		  for(i=0;i<len;i++)
+		  {
+			  System.out.print((char)  (str.charAt(i)&127));
+		  }
+		  
+		 System.out.println();
+		 
+		 for(i=0;i<len;i++)
+		  {
+			  System.out.print((char)  (str.charAt(i)^127));
+		  }
+		  
+		 System.out.println();
+}
+}
