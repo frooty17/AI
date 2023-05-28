@@ -1,0 +1,84 @@
+from Crypto.Cipher import AES
+
+# AES Encryption
+def aes_encrypt(key, data):
+    cipher = AES.new(key, AES.MODE_EAX)
+    ciphertext, tag = cipher.encrypt_and_digest(data.encode())
+    return cipher.nonce, ciphertext, tag
+
+# AES Decryption
+def aes_decrypt(key, nonce, ciphertext, tag):
+    cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+    plaintext = cipher.decrypt_and_verify(ciphertext, tag)
+    return plaintext.decode()
+
+# Encryption key
+key = b'C&F)H@McQfTjWnZr'
+
+# Data to be encrypted
+data = "This is a sample text used as plaintext for the program"
+
+# AES Encryption
+nonce, ciphertext, tag = aes_encrypt(key, data)
+
+# Print the encrypted data
+print("Cipher text:", ciphertext)
+
+# AES Decryption
+plaintext = aes_decrypt(key, nonce, ciphertext, tag)
+
+# Print the decrypted data
+print("Plain text:", plaintext)
+
+
+
+
+2ND
+
+
+
+#AES Encryption
+
+#INPUT:
+
+# importing AES
+#
+from Crypto.Cipher import AES
+
+# encryption key
+key = b'C&F)H@McQfTjWnZr'
+
+# create new instance of cipher
+cipher = AES.new(key, AES.MODE_EAX)
+
+# data to be encrypted
+data = "".encode()
+
+# nonce is a random value generated each time we instantiate the cipher using new()
+nonce = cipher.nonce
+
+# encrypt the data
+ciphertext = cipher.encrypt(data)
+
+# print the encrypted data
+print("Cipher text:", ciphertext)
+
+
+#OUTPUT:
+
+##('Cipher text:', "\x02\x17\xecq\x81\x8b\x91\xb8|\xf4N\xb0\x87\xbb]\x89'\x16\xaajj\x9f\xa6\r\x1cK^a!C")
+
+
+
+#AES  Decryption
+
+#INPUT:
+# generate new instance with the key and nonce same as encryption cipher
+cipher = AES.new(key, AES.MODE_EAX, nonce=nonce)
+
+# decrypt the data
+plaintext = cipher.decrypt(ciphertext)
+print("Plain text:", plaintext)
+
+#OUTPUT:
+#('Plain text:', 'This a Sample Text  used as Plaintext for the Program')
